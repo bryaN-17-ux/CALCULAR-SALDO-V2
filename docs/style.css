@@ -1,104 +1,198 @@
-/* Madrugada no CEASA (laranja/verde/amanhecer) <-> noite no código (roxo/ciano) */
+/* ============================================================
+   ESTILOS — madrugada no CEASA (laranja/verde/amanhecer)
+             <-> noite estudando código (roxo/ciano)
+   Bordas das fotos: cores do Divertidamente
+   ============================================================ */
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
+  color-scheme: dark;
   --noite: #140b2e; --roxo: #5b2be0; --ciano: #22d3ee;
-  --laranja: #ff8a1f; --verde: #3ecf6e;
-  --vidro: rgba(20,11,46,.74); --borda: rgba(255,255,255,.14);
+  --laranja: #ff8a1f; --verde: #3ecf6e; --vermelho: #ff6b6b;
+  --vidro: rgba(20,11,46,.76); --borda: rgba(255,255,255,.14);
   --texto: #f4efff; --mudo: #b9aedb;
 }
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: var(--texto); min-height: 100vh; padding: 2rem 1rem;
+  overflow-x: clip;
+  /* O fundo vai da noite (roxo/ciano) ao amanhecer (laranja/dourado) e volta, devagar */
   background: linear-gradient(120deg, #140b2e, #2b1670 28%, #0e7490 48%, #c2410c 76%, #f59e0b);
   background-size: 300% 300%; background-attachment: fixed;
   animation: turno 30s ease-in-out infinite;
 }
 @keyframes turno { 50% { background-position: 100% 50%; } }
 
-.layout { display: grid; grid-template-columns: 190px minmax(0,600px) 190px; justify-content: center; gap: 2rem; align-items: start; }
-.rail { position: sticky; top: 2rem; display: flex; flex-direction: column; gap: 1.6rem; }
-.foto { border: 4px solid var(--c); border-radius: 16px; overflow: hidden; line-height: 0;
-  box-shadow: 0 0 0 2px rgba(0,0,0,.35), 0 0 22px var(--c); transform: rotate(-2.5deg);
-  transition: transform .25s, box-shadow .25s; }
+/* Camada de detalhes: brilho ciano em cima (tela de código), brilho laranja embaixo (sol nascendo)
+   e uma grade de pontinhos discreta */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(34,211,238,.22), transparent 42%),
+    radial-gradient(circle at 88% 100%, rgba(255,138,31,.26), transparent 46%),
+    radial-gradient(rgba(255,255,255,.07) 1px, transparent 1.4px) 0 0 / 22px 22px;
+}
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Layout: fotos | conteúdo | fotos ---------- */
+.layout {
+  display: grid; grid-template-columns: minmax(110px,190px) minmax(0,600px) minmax(110px,190px);
+  justify-content: center; gap: 2rem; align-items: start;
+}
+.rail { display: flex; flex-direction: column; gap: 1.6rem; }
+@media (min-width: 1001px) and (min-height: 760px) {
+  .rail { position: sticky; top: 2rem; }   /* as fotos acompanham a rolagem */
+}
+
+/* ---------- Fotos com borda colorida (cor vem do style="--c:..." no HTML) ---------- */
+.foto {
+  border: 4px solid var(--c); border-radius: 16px; overflow: hidden; line-height: 0;
+  box-shadow: 0 0 0 2px rgba(0,0,0,.35), 0 0 22px var(--c);
+  transform: rotate(-2.5deg); transition: transform .25s, box-shadow .25s;
+}
 .foto:nth-child(even) { transform: rotate(2.5deg); }
-.foto:hover { transform: rotate(0) scale(1.06); box-shadow: 0 0 0 2px rgba(0,0,0,.35), 0 0 36px var(--c); }
+.foto:hover { transform: rotate(0) scale(1.06); box-shadow: 0 0 0 2px rgba(0,0,0,.35), 0 0 38px var(--c); }
 .foto img { width: 100%; aspect-ratio: 1; object-fit: cover; }
 
+/* ---------- Título ---------- */
 .container { min-width: 0; }
-h1 { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 8px;
+h1 {
+  font-size: 26px; font-weight: 800; display: flex; align-items: center; gap: 8px; letter-spacing: -.01em;
   background: linear-gradient(90deg, var(--laranja), var(--verde) 45%, var(--ciano));
-  -webkit-background-clip: text; background-clip: text; color: transparent; }
-h1 i { color: var(--laranja); -webkit-text-fill-color: var(--laranja); }
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+h1 i { -webkit-text-fill-color: var(--laranja); color: var(--laranja); }
 .lema { font-size: 13px; color: var(--mudo); margin: 4px 0 1.4rem; }
 
+/* ---------- Cards de vidro ---------- */
 .saldo-card, .section, .stat-card {
   background: var(--vidro); border: 1px solid var(--borda); border-radius: 16px;
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
-.saldo-card { padding: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  border-left: 4px solid var(--laranja); border-right: 4px solid var(--ciano); }
+
+.saldo-card {
+  padding: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  border-left: 4px solid var(--laranja); border-right: 4px solid var(--ciano);
+}
 .saldo-label { font-size: 13px; color: var(--mudo); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
-.saldo-valor { font-size: 36px; font-weight: 700; }
+.saldo-valor { font-size: 36px; font-weight: 800; line-height: 1.1; }
 .saldo-valor.positivo { color: var(--verde); text-shadow: 0 0 18px rgba(62,207,110,.45); }
-.saldo-valor.negativo { color: #ff6b6b; text-shadow: 0 0 18px rgba(255,107,107,.45); }
-.dias-info { font-size: 12px; color: var(--mudo); margin-top: 4px; }
-.dias-badge { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 72px; padding: 10px 14px;
-  border-radius: 14px; background: linear-gradient(135deg, var(--laranja), var(--verde)); color: #1a1033; }
+.saldo-valor.negativo { color: var(--vermelho); text-shadow: 0 0 18px rgba(255,107,107,.45); }
+.dias-info { font-size: 12px; color: var(--mudo); margin-top: 6px; }
+
+.dias-badge {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 76px; padding: 10px 14px;
+  border-radius: 14px; background: linear-gradient(135deg, var(--laranja), var(--verde)); color: #1a1033;
+  box-shadow: 0 0 18px rgba(255,138,31,.35);
+}
 .dias-badge span { font-size: 28px; font-weight: 800; line-height: 1; }
-.dias-badge small { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+.dias-badge small { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
 
 .section { padding: 1.25rem; margin-bottom: 1rem; }
 .section-title, .historico-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
 .historico-title { margin-top: 1.5rem; }
 
-.calendario .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.cal-titulo { font-weight: 600; font-size: 15px; text-transform: capitalize; }
-.cal-nav { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--borda); background: rgba(255,255,255,.08);
-  color: var(--texto); cursor: pointer; font-size: 16px; }
-.cal-nav:hover { background: rgba(255,255,255,.18); }
-.cal-sem, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-.cal-sem { text-align: center; font-size: 11px; color: var(--mudo); margin-bottom: 6px; }
-.cal-dia { aspect-ratio: 1; border-radius: 10px; border: 1px solid var(--borda); background: rgba(255,255,255,.06);
-  color: var(--texto); font-size: 14px; cursor: pointer; transition: transform .12s, background .12s; }
-.cal-dia:hover { transform: scale(1.1); background: rgba(255,255,255,.16); }
-.cal-dia.hoje { outline: 2px solid var(--ciano); outline-offset: 1px; }
-.cal-dia.trab { background: linear-gradient(135deg, var(--laranja), var(--verde)); color: #1a1033; font-weight: 800;
-  border-color: transparent; box-shadow: 0 0 12px rgba(255,138,31,.5); }
-.cal-info { margin-top: 10px; font-size: 12px; color: var(--mudo); text-align: center; }
+/* ---------- Calendário ---------- */
+.cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.cal-titulo { font-weight: 700; font-size: 16px; }
+.cal-titulo::first-letter { text-transform: uppercase; }   /* "setembro de 2026" -> "Setembro de 2026" */
+.cal-nav {
+  width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--borda); background: rgba(255,255,255,.08);
+  color: var(--texto); cursor: pointer; font-size: 16px; display: grid; place-items: center; transition: background .15s;
+}
+.cal-nav:hover { background: rgba(255,255,255,.2); }
 
+.cal-sem, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.cal-sem { text-align: center; font-size: 11px; font-weight: 600; color: var(--mudo); margin-bottom: 6px; }
+.cal-dia {
+  aspect-ratio: 1; border-radius: 10px; border: 1px solid var(--borda); background: rgba(255,255,255,.06);
+  color: var(--texto); font-size: 14px; cursor: pointer; transition: transform .12s, background .12s;
+}
+.cal-dia:hover { transform: scale(1.1); background: rgba(255,255,255,.18); }
+.cal-dia:active { transform: scale(.96); }
+.cal-dia.hoje { outline: 2px solid var(--ciano); outline-offset: 1px; }
+.cal-dia.trab {
+  background: linear-gradient(135deg, var(--laranja), var(--verde)); color: #1a1033; font-weight: 800;
+  border-color: transparent; box-shadow: 0 0 12px rgba(255,138,31,.5);
+}
+
+.cal-legenda { display: flex; justify-content: center; gap: 16px; margin-top: 12px; font-size: 11px; color: var(--mudo); }
+.cal-legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.lg { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+.lg-trab { background: linear-gradient(135deg, var(--laranja), var(--verde)); }
+.lg-hoje { border: 2px solid var(--ciano); }
+.cal-info { margin-top: 8px; font-size: 12px; color: var(--mudo); text-align: center; }
+
+/* ---------- Totais ---------- */
 .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
 .stat-card { padding: 1rem; }
 .stat-label { font-size: 12px; color: var(--mudo); margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
 .stat-val { font-size: 20px; font-weight: 700; }
-.stat-val.pos { color: var(--verde); } .stat-val.neg { color: #ff6b6b; }
+.stat-val.pos { color: var(--verde); }
+.stat-val.neg { color: var(--vermelho); }
 
+/* ---------- Formulário ---------- */
 .input-row { display: flex; gap: 8px; margin-bottom: 8px; }
-input { flex: 1; min-width: 0; padding: 10px 12px; font-size: 14px; color: var(--texto); background: rgba(255,255,255,.08);
-  border: 1px solid var(--borda); border-radius: 10px; }
+input {
+  flex: 1; min-width: 0; padding: 10px 12px; font-size: 14px; font-family: inherit; color: var(--texto);
+  background: rgba(255,255,255,.08); border: 1px solid var(--borda); border-radius: 10px;
+}
 input::placeholder { color: #8f84b5; }
 input:focus { outline: 2px solid var(--ciano); border-color: transparent; }
-.btn-acao { padding: 10px 14px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; color: #10121a; }
-.btn-entrada { background: var(--verde); } .btn-saida { background: #ff6b6b; }
-.btn-acao:hover { filter: brightness(1.1); }
+.btn-acao {
+  padding: 10px 14px; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; font-family: inherit;
+  cursor: pointer; color: #10121a; display: inline-flex; align-items: center; gap: 4px; transition: filter .15s, transform .1s;
+}
+.btn-entrada { background: var(--verde); }
+.btn-saida { background: var(--vermelho); }
+.btn-acao:hover { filter: brightness(1.12); }
+.btn-acao:active { transform: scale(.97); }
 
+/* ---------- Histórico ---------- */
 .historico-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-.historico-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 14px;
-  background: var(--vidro); border: 1px solid var(--borda); border-radius: 12px; }
+.historico-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 14px;
+  background: var(--vidro); border: 1px solid var(--borda); border-radius: 12px;
+}
 .historico-item .desc { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .historico-item .data { font-size: 11px; color: var(--mudo); }
-.val-pos { color: var(--verde); font-weight: 600; } .val-neg { color: #ff6b6b; font-weight: 600; }
+.val-pos { color: var(--verde); font-weight: 700; }
+.val-neg { color: var(--vermelho); font-weight: 700; }
 .btn-remover { background: none; border: none; color: var(--mudo); cursor: pointer; font-size: 16px; }
-.btn-remover:hover { color: #ff6b6b; }
+.btn-remover:hover { color: var(--vermelho); }
 .vazio { text-align: center; padding: 1rem; font-size: 13px; color: var(--mudo); background: var(--vidro); border-radius: 12px; }
-.rodape { margin-top: 1.5rem; text-align: center; }
-.btn-zerar { padding: 8px 14px; font-size: 13px; color: var(--mudo); background: rgba(255,255,255,.06);
-  border: 1px solid var(--borda); border-radius: 10px; cursor: pointer; }
-.btn-zerar:hover { color: #ff6b6b; border-color: #ff6b6b; }
 
+.rodape { margin-top: 1.5rem; text-align: center; }
+.btn-zerar {
+  padding: 8px 14px; font-size: 13px; font-family: inherit; color: var(--mudo); background: rgba(255,255,255,.06);
+  border: 1px solid var(--borda); border-radius: 10px; cursor: pointer;
+}
+.btn-zerar:hover { color: var(--vermelho); border-color: var(--vermelho); }
+
+button:focus-visible { outline: 2px solid var(--ciano); outline-offset: 2px; }
+
+/* ---------- Telas menores: fotos viram faixas acima e abaixo ---------- */
 @media (max-width: 1000px) {
   .layout { grid-template-columns: minmax(0,600px); }
-  .rail { position: static; flex-direction: row; gap: 1rem; }
-  .rail:first-child { order: -1; } .rail:last-child { order: 1; }
+  .rail { flex-direction: row; gap: 1rem; }
+  .rail:first-child { order: -1; }
+  .rail:last-child { order: 1; }
   .foto { flex: 1; min-width: 0; }
 }
-@media (prefers-reduced-motion: reduce) { body { animation: none; } }
+@media (max-width: 480px) {
+  body { padding: 1.25rem .75rem; }
+  h1 { font-size: 22px; }
+  .saldo-card { padding: 1.1rem; }
+  .saldo-valor { font-size: 30px; }
+  .cal-sem, .cal-grid { gap: 4px; }
+  .stat-val { font-size: 17px; }
+  .btn-acao { padding: 10px; }
+  .rail { gap: .6rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body { animation: none; }
+  * { transition: none !important; }
+}

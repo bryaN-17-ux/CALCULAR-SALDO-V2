@@ -4,7 +4,7 @@
 
 const FinanceController = {
 
-  // Mês exibido no calendário
+  // Mês exibido no calendário (mes de 0 a 11)
   mes: new Date().getMonth(),
   ano: new Date().getFullYear(),
 
@@ -20,24 +20,31 @@ const FinanceController = {
     this.render();
   },
 
+  // Redesenha a tela inteira a partir do estado atual do Model
   render() {
     FinanceView.renderSaldo(FinanceModel.calcSaldo());
-    FinanceView.renderDiasInfo(FinanceModel.getDias());
+    FinanceView.renderDiasInfo(FinanceModel.getDias(), DIARIA);
     FinanceView.renderTotais(FinanceModel.calcEntradas(), FinanceModel.calcSaidas());
-    FinanceView.renderCalendario(this.ano, this.mes, FinanceModel.state.datas, FinanceModel.hojeISO(),
-      FinanceModel.diasNoMes(this.ano, this.mes), (iso) => this.alternarDia(iso));
+    FinanceView.renderCalendario(
+      this.ano, this.mes,
+      FinanceModel.getDatas(), FinanceModel.hojeISO(),
+      FinanceModel.diasNoMes(this.ano, this.mes),
+      (iso) => this.alternarDia(iso)
+    );
     FinanceView.renderHistorico(FinanceModel.getTransacoes(), (i) => this.remover(i));
   },
 
+  // Clique num dia do calendário: marca ou desmarca o dia trabalhado
   alternarDia(iso) {
     FinanceModel.alternarDia(iso);
     this.render();
   },
 
+  // Setas do calendário: -1 = mês anterior, +1 = próximo mês
   mudarMes(delta) {
     this.mes += delta;
-    if (this.mes < 0) { this.mes = 11; this.ano--; }
-    if (this.mes > 11) { this.mes = 0; this.ano++; }
+    if (this.mes < 0)  { this.mes = 11; this.ano--; }
+    if (this.mes > 11) { this.mes = 0;  this.ano++; }
     this.render();
   },
 
@@ -45,7 +52,7 @@ const FinanceController = {
     const desc = FinanceView.getDescricao();
     const raw = FinanceView.getValor();
 
-    if (isNaN(raw) || raw <= 0) {
+    if (!Number.isFinite(raw) || raw <= 0) {
       FinanceView.focarInputValor();
       return;
     }
@@ -63,11 +70,15 @@ const FinanceController = {
   },
 
   zerarTudo() {
-    if (!confirm('Tem certeza que quer zerar tudo? Isso apaga os dias e todo o histórico.')) return;
+    if (!confirm('Tem certeza que quer zerar tudo? Isso apaga todos os dias trabalhados (incluindo os marcados no calendário) e todo o histórico.')) return;
     FinanceModel.zerarTudo();
     this.render();
   }
 };
 
 // Inicia a aplicação quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', () => FinanceController.init());
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => FinanceController.init());
+} else {
+  FinanceController.init();
+}
