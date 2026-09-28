@@ -4,9 +4,14 @@
 
 const FinanceController = {
 
+  // Mês exibido no calendário
+  mes: new Date().getMonth(),
+  ano: new Date().getFullYear(),
+
   init() {
     // Vincula os botões principais
-    document.getElementById('btn-dia').addEventListener('click', () => this.adicionarDia());
+    document.getElementById('cal-prev').addEventListener('click', () => this.mudarMes(-1));
+    document.getElementById('cal-next').addEventListener('click', () => this.mudarMes(1));
     document.getElementById('btn-entrada').addEventListener('click', () => this.registrar('entrada'));
     document.getElementById('btn-saida').addEventListener('click', () => this.registrar('saida'));
     document.getElementById('btn-zerar').addEventListener('click', () => this.zerarTudo());
@@ -19,11 +24,20 @@ const FinanceController = {
     FinanceView.renderSaldo(FinanceModel.calcSaldo());
     FinanceView.renderDiasInfo(FinanceModel.getDias());
     FinanceView.renderTotais(FinanceModel.calcEntradas(), FinanceModel.calcSaidas());
+    FinanceView.renderCalendario(this.ano, this.mes, FinanceModel.state.datas, FinanceModel.hojeISO(),
+      FinanceModel.diasNoMes(this.ano, this.mes), (iso) => this.alternarDia(iso));
     FinanceView.renderHistorico(FinanceModel.getTransacoes(), (i) => this.remover(i));
   },
 
-  adicionarDia() {
-    FinanceModel.adicionarDia();
+  alternarDia(iso) {
+    FinanceModel.alternarDia(iso);
+    this.render();
+  },
+
+  mudarMes(delta) {
+    this.mes += delta;
+    if (this.mes < 0) { this.mes = 11; this.ano--; }
+    if (this.mes > 11) { this.mes = 0; this.ano++; }
     this.render();
   },
 

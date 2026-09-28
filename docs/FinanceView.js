@@ -16,10 +16,32 @@ const FinanceView = {
 
   renderDiasInfo(dias) {
     const plural = dias !== 1;
+    document.getElementById('dias-total').textContent = dias;
     document.getElementById('dias-info').textContent =
       dias + ' dia' + (plural ? 's' : '') +
       ' trabalhado' + (plural ? 's' : '') +
       ' · R$ 50,00/dia';
+  },
+
+  renderCalendario(ano, mes, datas, hojeISO, diasNoMes, onToggle) {
+    const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+    const pad = n => String(n).padStart(2, '0');
+    const primeiro = new Date(ano, mes, 1).getDay();
+    const total = new Date(ano, mes + 1, 0).getDate();
+
+    let html = '<span></span>'.repeat(primeiro);
+    for (let d = 1; d <= total; d++) {
+      const iso = `${ano}-${pad(mes + 1)}-${pad(d)}`;
+      const trab = datas.includes(iso);
+      html += `<button class="cal-dia${trab ? ' trab' : ''}${iso === hojeISO ? ' hoje' : ''}" data-iso="${iso}" aria-pressed="${trab}">${d}</button>`;
+    }
+    const grid = document.getElementById('cal-grid');
+    grid.innerHTML = html;
+    grid.querySelectorAll('.cal-dia').forEach(b => b.addEventListener('click', () => onToggle(b.dataset.iso)));
+
+    document.getElementById('cal-titulo').textContent = `${MESES[mes]} de ${ano}`;
+    document.getElementById('cal-info').textContent =
+      `${diasNoMes} dia${diasNoMes !== 1 ? 's' : ''} trabalhado${diasNoMes !== 1 ? 's' : ''} neste mês · clique num dia para marcar ou desmarcar`;
   },
 
   renderTotais(entradas, saidas) {

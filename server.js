@@ -9,6 +9,7 @@ const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.css':  'text/css',
   '.js':   'application/javascript',
+  '.png':  'image/png',
 };
 
 const server = http.createServer((req, res) => {
