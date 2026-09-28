@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle Financeiro com o Pai</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1><i class="ti ti-currency-real" aria-hidden="true"></i> Controle com o Pai</h1>
+
+    <div class="saldo-card">
+      <div>
+        <div class="saldo-label"><i class="ti ti-wallet" aria-hidden="true"></i> Saldo atual</div>
+        <div class="saldo-valor positivo" id="saldo-display">R$ 0,00</div>
+        <div class="dias-info" id="dias-info">0 dias trabalhados · R$ 50,00/dia</div>
+      </div>
+      <!-- id adicionado para o Controller vincular o evento -->
+      <button class="btn-dia" id="btn-dia">
+        <i class="ti ti-plus" aria-hidden="true"></i> +1 dia
+      </button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label"><i class="ti ti-arrow-up" aria-hidden="true"></i> Total entradas</div>
+        <div class="stat-val pos" id="total-entradas">R$ 0,00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label"><i class="ti ti-arrow-down" aria-hidden="true"></i> Total saídas</div>
+        <div class="stat-val neg" id="total-saidas">R$ 0,00</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="ti ti-transfer" aria-hidden="true"></i> Registrar movimentação</div>
+      <div class="input-row">
+        <input type="text" id="desc-input" placeholder="Descrição (ex: almoço, material...)" />
+      </div>
+      <div class="input-row">
+        <input type="number" id="valor-input" placeholder="Valor em R$" min="0" step="0.01" />
+        <!-- ids adicionados para o Controller vincular os eventos -->
+        <button class="btn-acao btn-entrada" id="btn-entrada">
+          <i class="ti ti-plus" aria-hidden="true"></i> Entrada
+        </button>
+        <button class="btn-acao btn-saida" id="btn-saida">
+          <i class="ti ti-minus" aria-hidden="true"></i> Saída
+        </button>
+      </div>
+    </div>
+
+    <div class="historico-title"><i class="ti ti-list" aria-hidden="true"></i> Histórico</div>
+    <ul class="historico-list" id="historico"></ul>
+
+    <div class="rodape">
+      <!-- id adicionado para o Controller vincular o evento -->
+      <button class="btn-zerar" id="btn-zerar">
+        <i class="ti ti-refresh" aria-hidden="true"></i> Zerar tudo
+      </button>
+    </div>
+  </div>
+
+  <!-- Ordem importa: Model → View → Controller -->
+  <script src="FinanceModel.js"></script>
+<script src="FinanceView.js"></script>
+<script src="FinanceController.js"></script>
+</body>
+</html>
